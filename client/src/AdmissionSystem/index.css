@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  --color-dark-amethyst: #5c1126;
+  --color-indigo-ink: #15233d;
+  --color-indigo: #173254;
+  --color-indigo-2: #1d4471;
+  --color-indigo-bloom: #6B21A8;
+  --color-dark-violet: #3263a0;
+  --color-lavender-purple: #5683c2;
+  --color-bright-lavender: #7a9fd2;
+  --color-mauve-magic: #d4dceb;
+  --color-mauve: #e3e9f4;
+  
+  /* Map NTUB colors to the new palette for compatibility */
+  --color-ntub-blue: #6B21A8; /* Formal purple primary */
+  --color-ntub-red: #5c1126;  /* Formal deep red accent */
+  
+  --font-sans: "Inter", "Microsoft JhengHei", "Source Han Sans", system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900;
+    background-image: radial-gradient(circle at top, rgba(107, 33, 168, 0.08), transparent 34%), linear-gradient(180deg, #fbfcfe 0%, #f5f7fb 100%);
+  }
+}
+#site-logo {
+width: 150px; /* 根據你的導覽列高度調整 */
+height: auto; /* 保持比例 */
+display: block;
+}
