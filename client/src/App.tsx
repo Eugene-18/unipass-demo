@@ -14,7 +14,7 @@ import { UserProfile } from './components/UserProfile';
 import { StudentManagement } from './components/StudentManagement';
 import EventDashboard from './components/EventDashboard';
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000').replace(/\/$/, '');
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '${API_BASE_URL}/api/users/login').replace(/\/$/, '');
 const socket = io(API_BASE_URL);
 const roleRequestHeaders = (role: string) => ({ 'X-User-Role': role === '教師' ? 'teacher' : role });
 
@@ -1283,7 +1283,7 @@ function LoginScreen({ onLogin }: { onLogin: (user: any) => void }) {
       return;
     }
     try {
-      const response = await fetch('http://localhost:3000/api/users/login', {
+      const response = await fetch('${API_BASE_URL}/api/users/login/api/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ account: inputId, password: inputPwd })
