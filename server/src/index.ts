@@ -8,7 +8,7 @@ import crypto from 'crypto';
 import { db } from './db';
 import { events, registrations, users, students, applications, passwordResets } from './db/schema';
 import { eq, desc, and, sql } from 'drizzle-orm';
-import { sendResetCode, verifyMailConnection } from './services/mailService.js';
+import { sendResetCode, verifyMailConnection } from './services/mailService';
 import { getDepartmentRecommendations, getActivityRecommendations } from './services/recommendation.service';
 import { validatePassword } from './utils/passwordPolicy';
 
