@@ -1,66 +1,73 @@
-# UniPass 活動報名與藍新金流修正版
+# React + TypeScript + Vite
 
-本專案已修正活動報名後的藍新金流流程。使用者在活動詳情按下「我要報名並繳費」後，前端會呼叫後端建立 `payment_pending` 報名紀錄，後端依據活動費用產生藍新 MPG 2.0 的 `TradeInfo` 與 `TradeSha`，前端再建立隱藏表單並自動 POST 到藍新付款頁，不需要使用者另外複製或點擊付款網址。
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-付款完成後，藍新會 POST 到後端的 `/api/payment/return`；後端驗證 `TradeSha`、解密 `TradeInfo`，將對應報名狀態更新為 `paid`，最後把瀏覽器導向前端的 `/payment/success` 結果頁。`/api/payment/notify` 則提供藍新背景通知使用，正式環境應設定為外網可連線的 HTTPS URL。
+Currently, two official plugins are available:
 
-## 使用 VSCode 啟動
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-請使用 VSCode 開啟解壓後的 `event0816_fixed` 資料夾。第一次使用時，開啟兩個終端機分別執行下列指令：
+## React Compiler
 
-```bash
-cd server
-npm install
-npm run dev
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-```bash
-cd client
-npm install
-npm run dev -- --host 0.0.0.0
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-
-接著在同一台電腦瀏覽 `http://localhost:5173`。本機開發會使用 `client/.env.development` 連線至 `http://localhost:3000`；部署環境使用 `client/.env` 的線上後端網址。若部署後端網址不同，請設定環境變數 `VITE_API_URL`；未設定時會使用 `https://unipass-j78u.onrender.com`。
-
-## 本機付款設定
-
-目前 `server/.env` 已放入本次提供的藍新商店設定，並將本機付款完成回傳網址設為：
-
-```text
-http://localhost:3000/api/payment/return
-```
-
-這只適用於「瀏覽器、前端與後端都在同一台電腦」的測試情境。若藍新後台要求 NotifyURL 必須是公開網址，請啟動 ngrok 或其他反向代理，將下列設定改成公開 HTTPS 網址後重新啟動後端：
-
-```env
-NEWEBPAY_NOTIFY_URL=https://你的公開網域/api/payment/notify
-NEWEBPAY_RETURN_URL=https://你的公開網域/api/payment/return
-FRONTEND_URL=https://你的前端公開網域
-```
-
-不要把 `server/.env` 上傳到 GitHub 或公開網路；其中包含資料庫、郵件與藍新金流機密。若這些金鑰曾經公開分享，建議在相關服務後台重新產生並替換。
-
-## 付款測試流程
-
-登入後進入「校園活動」，開啟一個活動詳情，按下「我要報名並繳費」，確認視窗按下確定後，畫面應自動轉到藍新 MPG 付款頁。付款完成或取消後，藍新會回到前端付款結果頁；付款成功時，報名紀錄會由 `payment_pending` 更新為 `paid`，而活動列表會同步顯示已報名。
-
-若畫面沒有跳到藍新頁面，請先確認後端終端機沒有錯誤、`server/.env` 的資料庫可連線、前端瀏覽器沒有阻擋表單導向，並確認 `http://localhost:3000/api/payment/return` 可以回應 303 導向。
-
-## 建置檢查
-
-本修正版已通過以下檢查：
-
-```bash
-cd server && npx tsc --noEmit
-cd ../client && npx tsc -b && npm run build
-```
-
-## 檔案重點
-
-| 檔案 | 用途 |
-|---|---|
-| `server/src/index.ts` | 建立藍新交易、AES-256-CBC 加密、TradeSha 驗證、NotifyURL/ReturnURL 回傳處理 |
-| `server/.env` | 本機實際環境設定，含資料庫與藍新參數，請勿公開 |
-| `server/.env.example` | 不含真實機密的環境變數範本 |
-| `client/src/App.tsx` | 報名按鈕、付款表單自動 POST、付款結果頁 |
-| `client/.env` | 前端呼叫後端的 API 基底網址 |
