@@ -20,7 +20,7 @@ npm install
 npm run dev -- --host 0.0.0.0
 ```
 
-接著在同一台電腦瀏覽 `http://localhost:5173`。後端預設埠號為 `3000`，前端環境檔 `client/.env` 已設定 `VITE_API_BASE_URL=http://localhost:3000`。
+接著在同一台電腦瀏覽 `http://localhost:5173`。本機開發會使用 `client/.env.development` 連線至 `http://localhost:3000`；部署環境使用 `client/.env` 的線上後端網址。若部署後端網址不同，請設定環境變數 `VITE_API_URL`；未設定時會使用 `https://unipass-j78u.onrender.com`。
 
 ## 本機付款設定
 
